@@ -1,69 +1,44 @@
-let customers = [
-    {
-        name:"Saman",
-        age:25,
-        addres:"Colombo"
-    },
-    {
-        name:"Kamal",
-        age:30,
-        addres:"Kandy"
-    },
-    {
-        name:"Nimal",
-        age:35,
-        addres:"Galle"
-    },
-    {
-        name:"Sunil",
-        age:40,
-        addres:"Matara"
-    },
-    {
-        name:"Kasun",
-        age:45,
-        addres:"Jaffna"
-    },
-    {
-        name:"Rajitha",
-        age:76,
-        addres:"Anuradhapura"
-    }
-];
+let cardCountries = document.getElementById("cardCountries");
 
-function btnSubmit() {
-    addCustomer();
-    loadTable();
-};
+let browserBody = "";
 
-function addCustomer() {
-    let name = document.getElementById("txtName").value;
-    let age = document.getElementById("txtAge").value;
-    let address = document.getElementById("txtAddress").value;
-
-    customers.push({
-        name: name,
-        age: age,
-        addres: address
-    });
-};
-
-function loadTable() {
-    let tblCustomers = document.getElementById("tblCustomers");
-    
-    let tableBody = ` <tr>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Address</th>
-                    </tr>`;
-    
-    customers.forEach(data => {
-        tableBody += `<tr>
-                        <td>${data.name}</td>
-                        <td>${data.age}</td>
-                        <td>${data.addres}</td>
-                     </tr>`;
+fetch("https://restcountries.com/v3.1/all").then((res)=>res.json()).then(data=>{
+    data.forEach(element => {
+        browserBody += `<div class="col-3">
+                            <div class="card" style="width: 18rem; background-color:black; colour:white;">
+                                <img src="${element.flags.png}" class="card-img-top" alt="flags">
+                                <div class="card-body">
+                                    <h5 class="card-title">${element.name.common}</h5>
+                                    <p class="card-text">${element.name.official}</p>
+                                    <a href="${element.maps.googleMaps}" target="blank" class="btn btn-primary">Goto the Map</a>
+                                </div>
+                            </div>
+                        </div>`
     });
 
-    tblCustomers.innerHTML = tableBody;
+    cardCountries.innerHTML = browserBody;
+});
+
+function searchCountry() {
+    let userInput = document.getElementById("txtInput").value;
+
+    console.log(userInput);
+
+    let flagImg = document.getElementById("flagImg");
+    let countryName = document.getElementById("countryName");
+    let officialName = document.getElementById("officialName");
+    let region = document.getElementById("region");
+    let population = document.getElementById("population");
+
+    fetch(`https://restcountries.com/v3.1/name/${userInput}`).then(res=>res.json()).then(data=>{
+        data.forEach(obj=> {
+            console.log(obj);
+            flagImg.src = obj.flags.png;
+            countryName.innerText =  obj.name.common;
+            officialName.innterText = obj.name.official;
+            region.innerText = obj.region;;
+            population.innerText = obj.population;
+
+        });
+    });
 };
